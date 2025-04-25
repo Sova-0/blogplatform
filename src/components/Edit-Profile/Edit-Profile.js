@@ -11,6 +11,8 @@ const EditProfile = () => {
     const history = useHistory();
     const currentUser = useSelector((state) => state.user.currentUser);
     const { register, handleSubmit, reset, formState: { errors } } = useForm();
+
+    // ВСТАВЛЯЮ В ФОРМУ ДАННЫЕ ИЗ currentUser в state
     useEffect(() => {
         if (currentUser) {
             reset({
@@ -21,6 +23,8 @@ const EditProfile = () => {
             })
         }
     }, [currentUser, reset]);
+
+    // ДЕЛАЮ SUBMIT, НО ЕСЛИ ПАРОЛЬ ИЛИ ФОТО ПУСТЫЕ, ТО ПРОСТО УДАЛЯЮ ИХ
     const onSubmit = async (data) => {
         if (!data.password) {
             delete data.password;

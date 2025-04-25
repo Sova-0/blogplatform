@@ -9,6 +9,7 @@ const initialState = {
     error: null,
     isLogin: false,
     nowLoading: false,
+    userLoaded: false
 }
 
 const usersSlice = createSlice({
@@ -23,6 +24,7 @@ const usersSlice = createSlice({
         takeUserFromLocalStorage(state, action) {
             state.currentUser = action.payload;
             state.isLogin = true;
+            state.userLoaded = true;
         }
     },
     extraReducers: (builder) => {

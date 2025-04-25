@@ -61,7 +61,7 @@
     line-height: 22px;
 }
 
-.user-info {
+.post-item__user-info {
     display: flex;
     gap: 12px;
 }

@@ -8,7 +8,7 @@ import './Sign-In.css';
 const SignIn = () => {
     const history = useHistory();
     const dispatch = useDispatch();
-    const { register, handleSubmit, watch, formState: { errors } } = useForm();
+    const { register, handleSubmit, formState: { errors } } = useForm();
     const onSubmit = async (data) => {
         const result = await dispatch(loginUser(data));
         if (loginUser.fulfilled.match(result)) {

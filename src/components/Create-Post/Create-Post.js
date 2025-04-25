@@ -1,30 +1,141 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useForm, Controller } from "react-hook-form";
+import { useHistory } from "react-router-dom";
+import { setTitle, setDescription, setBody, addTag, removeTag, setTagList, resetArticleForm } from '../store/article/createAndEdit/createArticleReducer';
+import { createPost } from "../store/article/createAndEdit/createArticleAction";
 
 import './Create-Post.css';
 const CreatePost = () => {
+    const dispatch = useDispatch();
+    const history = useHistory();
+    const { control, formState: { errors } } = useForm();
+    const { tagList, title, description, body } = useSelector((state) => state.createArticle);
+
+    // ДЕЛАЮ RESET ФОРМЫ ДЛЯ СОЗДАНИЯ СТАТЬИ
+    useEffect(() => {
+        dispatch(resetArticleForm());
+    }, [dispatch]);
+
+    const onSubmit = async (e) => {
+        e.preventDefault();
+        const filteredTags = tagList.filter(tag => tag.trim() !== '');
+        dispatch(setTagList(filteredTags));
+        const result = await dispatch(createPost());
+
+        if (createPost.fulfilled.match(result)) {
+            history.push(`/`);
+        } else {
+            console.log('Ошибка при обновлении статьи', result);
+        }
+    }
+
+    // ДОБАВЛЯЮ ТЕГИ
+    const handleAddTag = () => {
+        const lastTag = tagList[tagList.length - 1];
+        if (lastTag && lastTag.trim() !== '') {
+            dispatch(addTag(''));
+        }
+    }
+
+    // ДОБАВЛЯЮ И ЗАНОШУ ТЕГИ
+    const handleTagChange = (index, value) => {
+        const updateTags = [...tagList];
+        updateTags[index] = value;
+        dispatch(setTagList(updateTags));
+    }
+
+    // УДАЛЯЮ ТЕГИ
+    const handleRemoveTag = (index) => {
+        if (tagList.length > 1) {
+            dispatch(removeTag(index));
+        }
+    }
     return (
-        <form className="create-post">
+        <form className="create-post" onSubmit={onSubmit}>
             <div className="create-post__title">Create new article</div>
             <div className="create-post__info">
                 <div className="create-post__info-title">
                     Title
-                    <input type="text" placeholder="Title" />
+                    <Controller
+                        name="title"
+                        control={control}
+                        rules={{ required: 'Title is required' }}
+                        render={({ field }) => (
+                            <input
+                                {...field}
+                                value={title}
+                                placeholder="Title"
+                                onChange={(e) => {
+                                    field.onChange(e);
+                                    dispatch(setTitle(e.target.value))
+                                }}
+                            />
+                        )}
+                    />
+                    {errors.title && <p className="error">{errors.title.message}</p>}
                 </div>
                 <div className="create-post__short-description">
                     Short description
-                    <textarea type="text" placeholder="Title" />
+                    <Controller
+                        name="description"
+                        control={control}
+                        rules={{ required: 'Description is required' }}
+                        render={({ field }) => (
+                            <textarea
+                                {...field}
+                                value={description}
+                                placeholder="Title"
+                                onChange={(e) => {
+                                    field.onChange(e);
+                                    dispatch(setDescription(e.target.value))
+                                }}
+                            />
+                        )}
+                    />
+                    {errors.description && <p className="error">{errors.description.message}</p>}
                 </div>
                 <div className="create-post__text">
                     Text
-                    <textarea type="text" placeholder="Text" />
+                    <Controller
+                        name="body"
+                        control={control}
+                        rules={{ required: 'Text is required' }}
+                        render={({ field }) => (
+                            <textarea
+                                {...field}
+                                value={body}
+                                placeholder="Text"
+                                onChange={(e) => {
+                                    field.onChange(e);
+                                    dispatch(setBody(e.target.value))
+                                }}
+                            />
+                        )}
+                    />
+                    {errors.body && <p className="error">{errors.body.message}</p>}
                 </div>
                 <div className="create-post__tags">
                     Tags
-                    <div className="create-post__tags-list"></div>
+                    <div className="create-post__tags-list">
+                        {tagList.map((tag, index) => (
+                            <div key={index} className="create-post__tags-item">
+                                <input type="text"
+                                    value={tag}
+                                    onChange={(e) => handleTagChange(index, e.target.value)}
+                                    className="create-post__tags-input"
+                                />
+                                <button className='create-post__tags-button-delete' type="button" onClick={() => handleRemoveTag(index)}>Delete</button>
+                                {index === tagList.length - 1 && (
+                                    <button className='create-post__tags-button-add' type="button" onClick={() => handleAddTag()}>Add tag</button>
+                                )}
+                            </div>
+                        ))}
+                    </div>
                 </div>
                 <button type="submit" className="create-post-send-button">Send</button>
             </div>
-        </form>
+        </form >
     )
 }
 

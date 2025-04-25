@@ -1,28 +1,46 @@
 import React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { format} from 'date-fns';
+import { format } from 'date-fns';
+import { favoritedLike } from '../store/article/favoritedLike/favoritedLikeAction';
 import './PostItem.css';
 
-const PostItem = ({ title, createdAt, favoritesCount, userName, avatar, slug, description }) => {
+const PostItem = ({ title, createdAt, favoritesCount, userName, avatar, slug, description, tagList, favorited }) => {
+    const dispatch = useDispatch();
+    const currentUser = useSelector((state) => state.user.currentUser);
     const formatCreatedAt = format(new Date(createdAt), 'MMMM d, yyyy')
+    const handleFavorite = () => {
+        dispatch(favoritedLike({ slug, favorited }))
+    }
     return (
         <li className="post-item">
             <div className='post-item-info'>
                 <div className='title-likes-info'>
                     <Link className='title-text' to={`/articles/${slug}`}>{title}</Link>
-                    <button className='likes-button'>
-                        <img src='/heart1.svg' alt='' /> {favoritesCount}
+                    <button
+                        className='likes-button'
+                        onClick={handleFavorite}
+                        disabled={!currentUser}>
+                        {favorited ? (
+                            <img src='/Heart_like.svg' alt='' />
+                        ) : (
+                            <img src='/heart1.svg' alt='' />
+                        )}
+                        {favoritesCount}
                     </button>
                 </div>
                 <ul className='tags-list-info'>
-                    <li className='tag-item'>Tag1</li>
-                    <li className='tag-item'>Some Tag</li>
+                    {tagList.map((tag, index) => (
+                        <li
+                        key={index} 
+                        className='tag-item'>{tag}</li>
+                    ))}
                 </ul>
                 <div className='post-item-text-info'>
                     {description}
                 </div>
             </div>
-            <div className='user-info'>
+            <div className='post-item__user-info'>
                 <div className='user-name-data-create-post-item'>
                     <div className='user-name'>{userName}</div>
                     <div className='data-create-post-item'>{formatCreatedAt} </div>

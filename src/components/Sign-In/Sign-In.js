@@ -1,13 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
 import { loginUser } from '../store/user/loginUserActions';
-import { useHistory } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import './Sign-In.css';
 
 const SignIn = () => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const [serverError, setServerError] = useState('');
   const {
     register,
     handleSubmit,
@@ -18,7 +19,7 @@ const SignIn = () => {
     if (loginUser.fulfilled.match(result)) {
       history.push('/');
     } else {
-      console.log('Ошибка входа');
+      setServerError('Wrong password or Email');
     }
   };
   return (
@@ -30,7 +31,14 @@ const SignIn = () => {
           <input
             type="email"
             placeholder="Email address"
-            {...register('email', { required: true })}
+            onChange={() => setServerError('')}
+            {...register('email', {
+              required: 'Email is required',
+              pattern: {
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: 'Email must be valid',
+              },
+            })}
           />
           {errors.email && <p className="error">Email must be valid</p>}
         </div>
@@ -44,8 +52,13 @@ const SignIn = () => {
               minLength: 6,
               maxLength: 20,
             })}
+            onChange={() => setServerError('')}
           />
-          {errors.password && <p className="error">Wrong password</p>}
+          {errors.password ? (
+            <p className="error">Password must be (6-20) chars</p>
+          ) : serverError ? (
+            <p className="error">{serverError}</p>
+          ) : null}
         </div>
       </div>
       <div className="sign-in__create-acc">
@@ -54,7 +67,9 @@ const SignIn = () => {
           <div className="sign-in__create-acc-info-text">
             Don’t have an account?
           </div>
-          <span className="sign-in__create-acc-info-sign-up">Sign Up</span>
+          <Link className="sign-in__create-acc-info-sign-up" to="/sign-up">
+            Sign Up
+          </Link>
         </div>
       </div>
     </form>

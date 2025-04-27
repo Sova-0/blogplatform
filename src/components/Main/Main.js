@@ -21,7 +21,6 @@ const Main = () => {
   };
   // ТУТ Я ДИСПАТЧУ С НУЖНЫМИ ДАННЫМИ ПО СТРАНИЦАМ
   useEffect(() => {
-    if (!userLoaded) return;
     const offset = (currentPage - 1) * pageSize;
     dispatch(fetchArticles({ limit: pageSize, offset }));
   }, [dispatch, currentPage, userLoaded]);

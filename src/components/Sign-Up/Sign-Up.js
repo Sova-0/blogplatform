@@ -1,6 +1,7 @@
 import React from 'react';
 import { useForm } from 'react-hook-form';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { registerUser } from '../store/user/newUserActions';
 import './Sign-Up.css';
 
@@ -46,7 +47,13 @@ const SignUp = () => {
           <input
             type="email"
             placeholder="Email address"
-            {...register('email', { required: true })}
+            {...register('email', {
+              required: 'Email is required',
+              pattern: {
+                value: /^[\w-.]+@([\w-]+\.)+[\w-]{2,4}$/,
+                message: 'Email must be valid',
+              },
+            })}
           />
           {errors.email && <p className="error">Email must be valid</p>}
         </div>
@@ -100,7 +107,9 @@ const SignUp = () => {
           <div className="sign-up__create-acc-info-text">
             Already have an account?
           </div>
-          <span className="sign-up__create-acc-info-sing-in">Sign In</span>
+          <Link className="sign-up__create-acc-info-sing-in" to="/sign-in">
+            Sign In
+          </Link>
         </div>
       </div>
     </form>

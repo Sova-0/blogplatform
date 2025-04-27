@@ -86,6 +86,7 @@
     height: 40px;
     background-color: #1890FF;
     color: #FFFFFF;
+    cursor: pointer;
 }
 
 .sign-in__create-acc-info {
@@ -100,6 +101,7 @@
 
 .sign-in__create-acc-info-sign-up {
     color: #1890FF;
+    cursor: pointer;
 }
 
 .sign-in p {

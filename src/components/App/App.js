@@ -25,16 +25,16 @@ const App = () => {
     <Router>
       <div className="App">
         <Header />
-        <Route path='/' component={Main} exact />
-        <Route path='/articles/:slug' component={Post} exact />
-        <Route path='/sign-up' component={SignUp} />
-        <Route path='/sign-in' component={SignIn} />
-        <Route path='/profile' component={EditProfile} />
-        <PrivateRoute path='/new-article' component={CreatePost} />
-        <Route path='/articles/:slug/edit' component={EditPost} exact />
+        <Route path="/" component={Main} exact />
+        <Route path="/articles/:slug" component={Post} exact />
+        <Route path="/sign-up" component={SignUp} />
+        <Route path="/sign-in" component={SignIn} />
+        <Route path="/profile" component={EditProfile} />
+        <PrivateRoute path="/new-article" component={CreatePost} />
+        <Route path="/articles/:slug/edit" component={EditPost} exact />
       </div>
     </Router>
   );
-}
+};
 
 export default App;
